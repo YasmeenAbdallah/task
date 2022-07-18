@@ -65,8 +65,8 @@ namespace ConsoleApp1
                                 cmd.Parameters.AddWithValue("@title", title);
                                 cmd.Parameters.AddWithValue("@email", email);
                                 cmd.Parameters.AddWithValue("@address", address);
-                                cmd.Parameters.AddWithValue("@net_salary", null);
-                                cmd.Parameters.AddWithValue("@gross_salary", null);
+                                cmd.Parameters.AddWithValue("@net_salary", DBNull.Value);
+                                cmd.Parameters.AddWithValue("@gross_salary", DBNull.Value);
                                 cmd.Parameters.AddWithValue("@gender", gender);
 
                                 cmd.ExecuteNonQuery();
