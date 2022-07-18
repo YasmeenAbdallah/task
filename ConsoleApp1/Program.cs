@@ -7,7 +7,6 @@ namespace ConsoleApp1
     class Program
     {
        
-      static  ConnectionString connObj = new ConnectionString();
         static void Main()
         {
             using var watcher = new FileSystemWatcher(@"D:\yasmeen's files\ConsoleApp1\ConsoleApp1");
