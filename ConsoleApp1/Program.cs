@@ -40,13 +40,24 @@ namespace ConsoleApp1
         /// <param name="e"></param>
         private static void OnChanged(object sender, FileSystemEventArgs e)
         {
+            insert_into_db_service obj = new insert_into_db_service();
             if (e.ChangeType != WatcherChangeTypes.Changed)
             {
                 return;
             }
+            try
+            {
+
+                obj.readFileAndInsertDb(e.FullPath);
+
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine($"Failed to insert: {e.Name} into the database");
+            }
             Console.WriteLine(" there's a change happened");
-           
-           
+
+
         }
 
         /// <summary>
@@ -56,30 +67,19 @@ namespace ConsoleApp1
         /// <param name="e"></param>
         private static void OnCreated(object sender, FileSystemEventArgs e)
         {
-            insert_into_db_service obj = new insert_into_db_service();
 
-            string conn = "Data Source=.;Database=task;Integrated Security=True;";
+
             //create instanace of database connection to insert the changes
-            using (SqlConnection con = new SqlConnection(conn))
-            {
-                try
-                {
-                    con.Open();
-                    obj.readFileAndInsertDb(e.FullPath);
 
-                }
-                catch (Exception x)
-                {
-                    Console.WriteLine($"Failed to insert: {e.Name} into the database");
-                }
-            }
+
+
 
             string value = $"Created: {e.FullPath}";
-             Console.WriteLine(value);
+            Console.WriteLine(value);
 
-                //insert query for database
+            //insert query for database
 
-            
+
 
         }
 
@@ -102,8 +102,9 @@ namespace ConsoleApp1
             Console.WriteLine($"    New: {e.FullPath}");
         }
 
-       
+
     }
 }
-   
+       
+    
 
