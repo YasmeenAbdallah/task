@@ -17,7 +17,7 @@ namespace ConsoleApp1
             //check if the pass is not null
             if (filePath != null)
             {
-                ExcelPackage.LicenseContext = LicenseContext.Commercial;
+                //ExcelPackage.LicenseContext = LicenseContext.Commercial;
                 using (var package = new ExcelPackage(new FileInfo(filePath)))
                 {
 
@@ -57,21 +57,35 @@ namespace ConsoleApp1
 
 
                                 con.Open();
-                                var sql = "INSERT INTO [dbo].[employees]([name],[mobile_number],[job_title],[email],[address],[net_salary],[gross_salary],[gender]) VALUES " +
-                                    " (@name, @mobile, @title, @email, @address, @net_salary, @gross_salary, @gender)";
-                                using (var cmd = new SqlCommand(sql, con))
+                                //check if the row exists or not by using the mobile num because mobile is unique
+                                SqlCommand checkRowExists = new SqlCommand("SELECT COUNT(*) FROM [dbo].[employees] WHERE ([mobile_number] = @ExistsMobile)", con);
+                                checkRowExists.Parameters.AddWithValue("@ExistsMobile", mobile);
+                                int MobUserExist = (int)checkRowExists.ExecuteScalar();
+                                // if exists skip
+                                if (MobUserExist > 0)
                                 {
-                                    cmd.Parameters.AddWithValue("@name", name);
-                                    cmd.Parameters.AddWithValue("@mobile", mobile);
-                                    cmd.Parameters.AddWithValue("@title", title);
-                                    cmd.Parameters.AddWithValue("@email", email);
-                                    cmd.Parameters.AddWithValue("@address", address);
-                                    cmd.Parameters.AddWithValue("@net_salary", DBNull.Value);
-                                    cmd.Parameters.AddWithValue("@gross_salary", DBNull.Value);
-                                    cmd.Parameters.AddWithValue("@gender", gender);
-
-                                    cmd.ExecuteNonQuery();
+                                    Console.WriteLine("exists: this phone number is exists");
                                 }
+                                //if not exists insert it
+                                else
+                                {
+                                    var sql = "INSERT INTO [dbo].[employees]([name],[mobile_number],[job_title],[email],[address],[net_salary],[gross_salary],[gender]) VALUES " +
+                                   " (@name, @mobile, @title, @email, @address, @net_salary, @gross_salary, @gender)";
+                                    using (var cmd = new SqlCommand(sql, con))
+                                    {
+                                        cmd.Parameters.AddWithValue("@name", name);
+                                        cmd.Parameters.AddWithValue("@mobile", mobile);
+                                        cmd.Parameters.AddWithValue("@title", title);
+                                        cmd.Parameters.AddWithValue("@email", email);
+                                        cmd.Parameters.AddWithValue("@address", address);
+                                        cmd.Parameters.AddWithValue("@net_salary", DBNull.Value);
+                                        cmd.Parameters.AddWithValue("@gross_salary", DBNull.Value);
+                                        cmd.Parameters.AddWithValue("@gender", gender);
+
+                                        cmd.ExecuteNonQuery();
+                                    }
+                                }
+                              
 
 
                                 //  Console.WriteLine("Commands executed! Total rows affected are " + insertCommand.ExecuteNonQuery());
